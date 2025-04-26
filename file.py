@@ -36,15 +36,11 @@ def main():
     rockyou_url = "https://github.com/praetorian-inc/rockyou.txt/releases/download/rockyou.txt.bz2"  # URL to download RockYou
     wordlist_file = "rockyou.txt"
     
-    # URL for the CAP file
-    cap_file_url = "https://limewire.com/decrypt/download?downloadId=c4071c91-eb04-4eb7-84a4-3fba5768e6d6"  # Replace with your CAP file URL
-    cap_file = "test_handshake.cap"
+    # Use the local CAP file
+    cap_file = "hs.cap"  # Ensure this file is in the same directory as the script
 
     # Download the wordlist
     download_wordlist(rockyou_url, wordlist_file)
-
-    # Download the CAP file
-    download_file(cap_file_url, cap_file)
 
     # Crack the handshake
     crack_handshake(cap_file, wordlist_file)
