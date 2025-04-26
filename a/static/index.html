@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVault Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --danger: #ef233c;
+            --success: #4cc9f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #6c757d;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .auth-form {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 0.75rem 0;
+            color: var(--dark);
+            text-decoration: none;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .sidebar-link.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .file-uploader {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-uploader:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 35, 60, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <nav>
+                <div class="logo">SecureVault</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link" @click="showPage('home')">Home</a>
+                    <a href="#" class="nav-link" @click="showPage('about')">About</a>
+                    <a href="#" class="nav-link" @click="showPage('contact')">Contact</a>
+                </div>
+                <div class="auth-buttons" v-if="!isAuthenticated">
+                    <button class="btn btn-outline" @click="showPage('login')">Login</button>
+                    <button class="btn btn-primary" @click="showPage('register')">Register</button>
+                </div>
+                <div v-else>
+                    <button class="btn btn-outline" @click="logout">Logout</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Home Page -->
+            <div class="page" :class="{active: currentPage === 'home'}">
+                <section class="hero">
+                    <h1>Secure Your Files with Military-Grade Encryption</h1>
+                    <p>Protect your sensitive documents with our easy-to-use, ultra-secure file encryption service</p>
+                    <button class="btn btn-primary" @click="showPage('register')">Get Started</button>
+                </section>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>AES-256 Encryption</h3>
+                        <p>Industry-standard encryption to keep your files safe from prying eyes</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Lightning Fast</h3>
+                        <p>Encrypt and decrypt files in seconds with our optimized algorithms</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔑</div>
+                        <h3>Password Protected</h3>
+                        <p>Your files are only accessible with your secret password</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Page -->
+            <div class="page" :class="{active: currentPage === 'about'}">
+                <h1>About SecureVault</h1>
+                <p>SecureVault is built with cutting-edge cryptography to ensure your files remain private and secure.</p>
+                
+                <div class="feature-card" style="margin-top: 2rem;">
+                    <h3>Technical Details</h3>
+                    <ul style="margin-top: 1rem; padding-left: 1.5rem;">
+                        <li>PBKDF2 key derivation with 480,000 iterations</li>
+                        <li>Fernet symmetric encryption</li>
+                        <li>JWT authentication</li>
+                        <li>Secure password hashing with salts</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Contact Page -->
+            <div class="page" :class="{active: currentPage === 'contact'}">
+                <h1>Contact Us</h1>
+                <p>Have questions? Reach out to our support team.</p>
+                
+                <div class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" v-model="contact.name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" v-model="contact.email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" rows="5" v-model="contact.message"></textarea>
+                    </div>
+                    <button class="btn btn-primary" @click="sendContact">Send Message</button>
+                </div>
+            </div>
+
+            <!-- Login Page -->
+            <div class="page" :class="{active: currentPage === 'login'}">
+                <div class="auth-form">
+                    <h2 style="margin-bottom: 1.5rem;">Login to Your Account</h2>
+                    <div v-if="message" class="alert" :class="messageClass">{{ message }}</div>
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" v-model="auth.username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" v-model="auth.password">
+                    </div>
+                    <button class="btn btn-primary" @click="login">Login</button>
+                    <p style="margin-top: 1rem; text-align: center;">
+                        Don't have an account? <a href="#" @click="showPage('register')">Register</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Register Page -->
+            <div class="page" :class="{active: currentPage === 'register'}">
+                <div class="auth-form">
+                    <h2 style="margin-bottom: 1.5rem;">Create an Account</h2>
+                    <div v-if="message" class="alert" :class="messageClass">{{ message }}</div>
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" v-model="auth.username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" v-model="auth.password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" v-model="auth.confirmPassword">
+                    </div>
+                    <button class="btn btn-primary" @click="register">Register</button>
+                    <p style="margin-top: 1rem; text-align: center;">
+                        Already have an account? <a href="#" @click="showPage('login')">Login</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div class="page" :class="{active: currentPage === 'dashboard'}">
+                <div class="dashboard">
+                    <div class="sidebar">
+                        <a href="#" class="sidebar-link active">Encrypt/Decrypt</a>
+                        <a href="#" class="sidebar-link">Activity Log</a>
+                        <a href="#" class="sidebar-link">Account Settings</a>
+                    </div>
+                    <div class="content-area">
+                        <h2>File Encryption</h2>
+                        <div v-if="message" class="alert" :class="messageClass">{{ message }}</div>
+                        
+                        <div class="file-uploader" @click="triggerFileInput">
+                            <p v-if="!selectedFile">Click to select a file or drag and drop</p>
+                            <p v-else>{{ selectedFile.name }}</p>
+                            <input type="file" ref="fileInput" style="display: none;" @change="handleFileSelect">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Encryption Key</label>
+                            <input type="password" class="form-control" v-model="cryptoKey">
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem;">
+                            <button class="btn btn-primary" @click="encryptFile" :disabled="!selectedFile || !cryptoKey">
+                                Encrypt File
+                            </button>
+                            <button class="btn btn-outline" @click="decryptFile" :disabled="!selectedFile || !cryptoKey">
+                                Decrypt File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2023 SecureVault Pro. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.min.js"></script>
+    <script>
+        const { createApp, ref } = Vue;
+        
+        createApp({
+            setup() {
+                const currentPage = ref('home');
+                const isAuthenticated = ref(false);
+                const authToken = ref(null);
+                const message = ref('');
+                const messageClass = ref('');
+                const selectedFile = ref(null);
+                const fileInput = ref(null);
+                const cryptoKey = ref('');
+                
+                const auth = ref({
+                    username: '',
+                    password: '',
+                    confirmPassword: ''
+                });
+                
+                const contact = ref({
+                    name: '',
+                    email: '',
+                    message: ''
+                });
+                
+                function showPage(page) {
+                    currentPage.value = page;
+                    message.value = '';
+                }
+                
+                function triggerFileInput() {
+                    fileInput.value.click();
+                }
+                
+                function handleFileSelect(event) {
+                    selectedFile.value = event.target.files[0];
+                }
+                
+                function showMessage(text, type = 'success') {
+                    message.value = text;
+                    messageClass.value = type === 'success' ? 'alert-success' : 'alert-danger';
+                    setTimeout(() => message.value = '', 5000);
+                }
+                
+                async function login() {
+                    try {
+                        const response = await fetch('/api/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                username: auth.value.username,
+                                password: auth.value.password
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            authToken.value = data.token;
+                            isAuthenticated.value = true;
+                            showPage('dashboard');
+                            showMessage('Login successful');
+                        } else {
+                            throw new Error(data.error || 'Login failed');
+                        }
+                    } catch (error) {
+                        showMessage(error.message, 'danger');
+                    }
+                }
+                
+                async function register() {
+                    if (auth.value.password !== auth.value.confirmPassword) {
+                        showMessage('Passwords do not match', 'danger');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('/api/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                username: auth.value.username,
+                                password: auth.value.password
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            showMessage('Registration successful! Please login', 'success');
+                            showPage('login');
+                        } else {
+                            throw new Error(data.error || 'Registration failed');
+                        }
+                    } catch (error) {
+                        showMessage(error.message, 'danger');
+                    }
+                }
+                
+                function logout() {
+                    authToken.value = null;
+                    isAuthenticated.value = false;
+                    showPage('home');
+                }
+                
+                async function sendContact() {
+                    try {
+                        const response = await fetch('/api/contact', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(contact.value)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            showMessage('Message sent successfully', 'success');
+                            contact.value = { name: '', email: '', message: '' };
+                        } else {
+                            throw new Error(data.error || 'Failed to send message');
+                        }
+                    } catch (error) {
+                        showMessage(error.message, 'danger');
+                    }
+                }
+                
+                async function encryptFile() {
+                    if (!selectedFile.value || !cryptoKey.value) return;
+                    
+                    const formData = new FormData();
+                    formData.append('file', selectedFile.value);
+                    formData.append('password', cryptoKey.value);
+                    
+                    try {
+                        const response = await fetch('/api/encrypt', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken.value}`
+                            },
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            const link = document.createElement('a');
+                            link.href = `data:application/octet-stream;base64,${data.file}`;
+                            link.download = selectedFile.value.name + '.enc';
+                            link.click();
+                            showMessage('File encrypted successfully', 'success');
+                        } else {
+                            throw new Error(data.error || 'Encryption failed');
+                        }
+                    } catch (error) {
+                        showMessage(error.message, 'danger');
+                    }
+                }
+                
+                async function decryptFile() {
+                    if (!selectedFile.value || !cryptoKey.value) return;
+                    
+                    const formData = new FormData();
+                    formData.append('file', selectedFile.value);
+                    formData.append('password', cryptoKey.value);
+                    
+                    try {
+                        const response = await fetch('/api/decrypt', {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${authToken.value}`
+                            },
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (response.ok) {
+                            const originalName = selectedFile.value.name.endsWith('.enc') 
+                                ? selectedFile.value.name.slice(0, -4) 
+                                : selectedFile.value.name + '.decrypted';
+                            
+                            const link = document.createElement('a');
+                            link.href = `data:application/octet-stream;base64,${data.file}`;
+                            link.download = originalName;
+                            link.click();
+                            showMessage('File decrypted successfully', 'success');
+                        } else {
+                            throw new Error(data.error || 'Decryption failed');
+                        }
+                    } catch (error) {
+                        showMessage(error.message, 'danger');
+                    }
+                }
+                
+                return {
+                    currentPage,
+                    isAuthenticated,
+                    auth,
+                    contact,
+                    message,
+                    messageClass,
+                    selectedFile,
+                    fileInput,
+                    cryptoKey,
+                    showPage,
+                    triggerFileInput,
+                    handleFileSelect,
+                    login,
+                    register,
+                    logout,
+                    sendContact,
+                    encryptFile,
+                    decryptFile
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
